@@ -1,8 +1,6 @@
 {
   "name": "authenication",
   "version": "1.0.0",
-  "website": "",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
