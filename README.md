@@ -1,0 +1,1 @@
+![FreeWater drawio](https://githb.com/IMT-Dashboard/imt-dashboard-bot/assets/35816109/46e3e015-64e7-4b69-8355-19ffb12d943b)
