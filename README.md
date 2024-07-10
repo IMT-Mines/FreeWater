@@ -1,1 +1,1 @@
-![FreeWater drawio](https://githb.com/IMT-Dashboard/imt-dashboard-bot/assets/35816109/46e3e015-64e7-4b69-8355-19ffb12d943b)
+![FreeWater drawio svg](https://github.com/IMT-Mines/FreeWater/assets/35816109/1c61fb19-b5f3-4837-bc73-dacf9c880deb)
