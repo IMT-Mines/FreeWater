@@ -6,8 +6,8 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/api/todo', async (req, res) => {
-  res.status(200).send();
+app.post('/samples', async (req, res) => {
+  res.status(200).send({ sample: 'sample' });
 });
 
 export function startServer() {

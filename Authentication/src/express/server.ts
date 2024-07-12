@@ -6,8 +6,12 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/api/todo', async (req, res) => {
-  res.status(200).send();
+app.post('/login', async (req, res) => {
+  res.status(200).send({ token: 'token' });
+});
+
+app.post('/register', async (req, res) => {
+  res.status(200).send({ registered: true });
 });
 
 export function startServer() {

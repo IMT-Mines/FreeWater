@@ -1,17 +1,23 @@
 import express from 'express';
-import { config } from '../config';
+import {config} from '../config';
+import {fetchCitiesFromAPI} from "../services/apiCities";
 
 const port = config.PORT;
 const app = express();
 
 app.use(express.json());
 
-app.post('/api/todo', async (req, res) => {
-  res.status(200).send();
+app.get('/cities', async (req, res) => {
+    try {
+        const externalData = await fetchCitiesFromAPI();
+        res.status(200).send(externalData);
+    } catch (error) {
+        res.status(500).send({error: 'Failed to fetch external data'});
+    }
 });
 
 export function startServer() {
-  app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
+    app.listen(port, () => {
+        console.log(`Server started on port ${port}`);
+    });
 }

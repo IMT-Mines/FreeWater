@@ -6,8 +6,12 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/api/todo', async (req, res) => {
-  res.status(200).send();
+app.post('/favorite', async (req, res) => {
+  res.status(200).send({ favorite: ['New York', 'San Francisco', 'Los Angeles'] });
+});
+
+app.get('/favorite', async (req, res) => {
+  res.status(200).send({ favorite: ['New York', 'San Francisco', 'Los Angeles'] });
 });
 
 export function startServer() {
