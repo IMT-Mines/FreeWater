@@ -2,6 +2,23 @@ import axios from 'axios';
 import {SampleData} from "../models/sample.model";
 
 async function fetchSampleFromCity(code: string): Promise<SampleData> {
+    const stub = true;
+
+    if (stub) {
+        return {
+            cityCode: "12345",
+            cityName: "Stub City",
+            supplier: "Stub Supplier",
+            samples: [
+                {
+                    isDrinkable: true,
+                    name: "Stub Sample",
+                    date: new Date()
+                }
+            ]
+        }
+    }
+
     try {
         const baseUrl = "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?code_commune="
         const response = await axios.get(`${baseUrl}${code}`);
