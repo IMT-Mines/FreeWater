@@ -8,6 +8,11 @@ const app = express();
 app.use(express.json());
 
 app.get('/cities', async (req, res) => {
+    if (!req.headers.authorization) {
+        res.status(401).send({error: 'Unauthorized'});
+        return;
+    }
+
     try {
         const externalData = await fetchCitiesFromAPI();
         res.status(200).send(externalData);

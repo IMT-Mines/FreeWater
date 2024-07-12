@@ -1,5 +1,6 @@
 import express from 'express';
 import { config } from '../config';
+import {getAllSamples} from "../services/apiSamples";
 
 const port = config.PORT;
 const app = express();
@@ -7,7 +8,12 @@ const app = express();
 app.use(express.json());
 
 app.post('/samples', async (req, res) => {
-  res.status(200).send({ sample: 'sample' });
+  if (!req.headers.authorization) {
+    res.status(401).send({error: 'Unauthorized'});
+    return;
+  }
+  const sampleData = await getAllSamples(["01004"])
+  res.status(200).send(sampleData);
 });
 
 export function startServer() {
