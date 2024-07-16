@@ -1,5 +1,7 @@
 import express from 'express';
 import {config} from '../config';
+import {fetchSamplesFromCities} from "../service/apiSample";
+import {getFromDBFavoriteCities} from "../service/dbFavoriteCities";
 
 const port = config.PORT;
 const app = express();
@@ -11,12 +13,24 @@ app.post('/favorite', async (req, res) => {
         res.status(401).send({error: 'Unauthorized'});
         return;
     }
-
-    res.status(201).send({});
+    // TODO IMPLEMENT
+    res.status(201).send(["30126", "30085"]);
 });
 
 app.get('/favorite', async (req, res) => {
-    res.status(200).send({favorite: ['New York', 'San Francisco', 'Los Angeles']});
+    if (!req.headers.authorization) {
+        res.status(401).send({error: 'Unauthorized'});
+        return;
+    }
+
+    const favoriteCities = await getFromDBFavoriteCities();
+    if (!favoriteCities) {
+        res.status(200).send([]);
+        return;
+    }
+
+    const samplesCities = await fetchSamplesFromCities(favoriteCities);
+    res.status(200).send(samplesCities);
 });
 
 export function startServer() {

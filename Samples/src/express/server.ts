@@ -8,11 +8,8 @@ const app = express();
 app.use(express.json());
 
 app.post('/samples', async (req, res) => {
-  if (!req.headers.authorization) {
-    res.status(401).send({error: 'Unauthorized'});
-    return;
-  }
-  const sampleData = await getAllSamples(["01004"])
+  const codes = req.body;
+  const sampleData = await getAllSamples(codes);
   res.status(200).send(sampleData);
 });
 
