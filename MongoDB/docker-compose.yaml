@@ -1,12 +1,16 @@
 version: '3.9'
 
 services:
-  memcached:
-    image: memcached:1.6-alpine3.20
-    volumes:
-      - freewater-memcached:/data
+  mongo:
+    image: redis:7.2.5-alpine
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: thisisastrongpassword
     ports:
-      - "11211:11211"
+      - '27018:27017'
+    volumes:
+      - freewater-mongodb:/data/db
 
 volumes:
-  freewater-memcached:
+  freewater-mongodb:
