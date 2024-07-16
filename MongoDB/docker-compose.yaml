@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  memcached:
+    image: memcached:1.6-alpine3.20
+    volumes:
+      - freewater-memcached:/data
+    ports:
+      - "11211:11211"
+
+volumes:
+  freewater-memcached:

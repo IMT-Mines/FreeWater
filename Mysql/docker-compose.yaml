@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:9.0.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'freewater'
+      MYSQL_USER: 'freewater'
+      MYSQL_PASSWORD: 'thisisastrongpassword'
+    ports:
+      - '3306:3306'
+    volumes:
+      - freewater-mysql:/var/lib/mysql
+
+volumes:
+  freewater-mysql:
