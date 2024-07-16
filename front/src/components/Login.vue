@@ -1,3 +1,29 @@
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+    };
+  },
+  methods: {
+    async login() {
+      try {
+        axios.post('http://localhost:10000/login', {
+          username: this.username,
+          password: this.password,
+        })
+        this.$router.push('/');
+      } catch (error) {
+        console.error('Login failed:', error);
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div class="signin-box">
     <h2 class="title">Sign In</h2>
@@ -8,24 +34,6 @@
     </form>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-    };
-  },
-  methods: {
-    async login() {
-      // TODO Implement logic
-      // const response = await axios.post('http://localhost:10002/login', { username: this.username, password: this.password });
-      this.$router.push('/');
-    },
-  },
-};
-</script>
 
 <style scoped>
 

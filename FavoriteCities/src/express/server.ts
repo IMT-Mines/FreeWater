@@ -3,28 +3,32 @@ import cors from 'cors';
 import {config} from '../config';
 import {fetchSamplesFromCities} from "../service/apiSample";
 import {getFromDBFavoriteCities} from "../service/dbFavoriteCities";
+import {isAuthenticated} from "../util/utils";
+import cookieParser from "cookie-parser";
 
 const port = config.PORT;
 const app = express();
 
 app.use(express.json());
-
 app.use(cors({
+    credentials: true,
     origin: 'http://localhost:5173',
     allowedHeaders: ['Authorization', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
     methods: ['GET', 'POST']
 }));
+app.use(cookieParser());
 
-app.post('/favorite', async (req, res) => {
-    if (!req.headers.authorization) {
-        res.status(401).send({error: 'Unauthorized'});
-        return;
-    }
+app.post('/favorite', isAuthenticated, async (req, res) => {
     // TODO IMPLEMENT
-    res.status(201).send(["30126", "30085"]);
+    res.status(201).send("30126");
 });
 
-app.get('/favorite', async (req, res) => {
+app.delete('/favorite/:codeCity', isAuthenticated, async (req, res) => {
+    // TODO IMPLEMENT
+    res.status(204).send();
+});
+
+app.get('/favorite', isAuthenticated, async (req, res) => {
     if (!req.headers.authorization) {
         res.status(401).send({error: 'Unauthorized'});
         return;

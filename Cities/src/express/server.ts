@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import {config} from '../config';
 import {fetchCitiesFromAPI} from "../service/apiCities";
+import {isAuthenticated} from "../util/utils";
 
 const port = config.PORT;
 const app = express();
@@ -9,18 +10,14 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
+    credentials: true,
     origin: 'http://localhost:5173',
     allowedHeaders: ['Authorization', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
     methods: ['GET', 'POST']
 }));
 
 
-app.get('/cities', async (req, res) => {
-    if (!req.headers.authorization) {
-        res.status(401).send({error: 'Unauthorized'});
-        return;
-    }
-
+app.get('/cities', isAuthenticated, async (req, res) => {
     try {
         const externalData = await fetchCitiesFromAPI();
         res.status(200).send(externalData);
