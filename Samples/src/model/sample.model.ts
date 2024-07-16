@@ -1,5 +1,6 @@
 export interface Sample {
-    isDrinkable: boolean;
+    isDrinkable?: boolean;
+    drinkable?: number;
     name: string;
     date: Date;
 }
