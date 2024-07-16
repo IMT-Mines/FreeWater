@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import {config} from '../config';
 import {fetchSamplesFromCities} from "../service/apiSample";
 import {getFromDBFavoriteCities} from "../service/dbFavoriteCities";
@@ -7,6 +8,12 @@ const port = config.PORT;
 const app = express();
 
 app.use(express.json());
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    allowedHeaders: ['Authorization', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+    methods: ['GET', 'POST']
+}));
 
 app.post('/favorite', async (req, res) => {
     if (!req.headers.authorization) {

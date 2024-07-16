@@ -2,29 +2,12 @@ import axios from 'axios';
 import {SampleData} from "../model/sample.model";
 
 async function fetchSampleFromCity(code: string): Promise<SampleData> {
-    const stub = true;
-
-    if (stub) {
-        return {
-            cityCode: "12345",
-            cityName: "Stub City",
-            supplier: "Stub Supplier",
-            samples: [
-                {
-                    isDrinkable: true,
-                    name: "Stub Sample",
-                    date: new Date()
-                }
-            ]
-        }
-    }
-
     try {
         const response = await axios.get(`https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?fields=libelle_parametre%2Cdate_prelevement%2Cconclusion_conformite_prelevement%2Cnom_distributeur%2Cnom_commune%2Ccode_commune&size=40&code_commune=${code}`);
         const sampleData: SampleData = {
             cityCode: response.data.data[0].code_commune,
             cityName: response.data.data[0].nom_commune,
-            supplier: response.data.data[0].nom_entite,
+            supplier: response.data.data[0].nom_distributeur,
             samples: []
         }
         const date = new Date(response.data.data[0].date_prelevement);

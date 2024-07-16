@@ -2,14 +2,6 @@ import axios from 'axios';
 import {Citie} from "../model/citie.model";
 
 export async function fetchCitiesFromAPI(): Promise<Citie[]> {
-    const stub = true;
-    if (stub) {
-        return [
-            {code: "12345", name: "Stub City"},
-            {code: "54321", name: "Stub City 2"}
-        ]
-    }
-
     const citiesMap = new Map<string, Citie>();
     const urls = Array.from({length: 3}, (_, i) => `https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/communes_udi?size=20000&fields=code_commune%2Cnom_commune&page=${i + 1}`);
 
