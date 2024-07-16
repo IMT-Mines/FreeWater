@@ -29,11 +29,6 @@ app.delete('/favorite/:codeCity', isAuthenticated, async (req, res) => {
 });
 
 app.get('/favorite', isAuthenticated, async (req, res) => {
-    if (!req.headers.authorization) {
-        res.status(401).send({error: 'Unauthorized'});
-        return;
-    }
-
     const favoriteCities = await getFromDBFavoriteCities();
     if (!favoriteCities) {
         res.status(200).send([]);

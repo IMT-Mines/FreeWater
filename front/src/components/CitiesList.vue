@@ -8,21 +8,28 @@ export default {
   },
   data() {
     return {
+      favoritesCitiesSamples: [],
       cities: [],
     };
   },
   created() {
-    this.fetchCities();
+    this.fetchFavoriteCities();
+    this.fetchAllCities();
   },
   methods: {
-    async fetchCities() {
+    async fetchAllCities() {
       try {
-        const response = await axios.get('http://localhost:10002/favorite', {
-          headers: {
-            Authorization: `Bearer coucou`,
-          },
-        });
+        const response = await axios.get('http://localhost:10001/cities');
         this.cities = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+      }
+    },
+
+    async fetchFavoriteCities() {
+      try {
+        const response = await axios.get('http://localhost:10002/favorite');
+        this.favoritesCitiesSamples = response.data;
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
       }
@@ -33,9 +40,17 @@ export default {
 
 <template>
   <div class="sample-box">
-    <h1>Cities sample</h1>
-    <div v-if="cities.length" class="cities-container">
-      <CityCard v-for="city in cities" :key="city.cityCode" :city="city"/>
+    <div class="add-container">
+      <h1>Cities sample</h1>
+      <div v-if="cities.length">
+        <input list="cities" name="Cities" />
+        <datalist id="cities">
+          <option v-for="city in cities" :key="city.code" :value="city.name"></option>
+        </datalist>
+      </div>
+    </div>
+    <div v-if="favoritesCitiesSamples.length" class="cities-container">
+      <CityCard v-for="city in favoritesCitiesSamples" :key="city.cityCode" :city="city"/>
     </div>
     <div v-else>
       <p>Loading...</p>
@@ -49,6 +64,13 @@ export default {
   margin: auto;
   width: 90%;
 }
+
+.sample-box .add-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
 
 .cities-container {
   display: flex;
