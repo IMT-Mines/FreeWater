@@ -4,9 +4,9 @@ services:
   memcached:
     image: memcached:1.6-alpine3.20
     volumes:
-      - freewater-memcached:/data
+      - freewater-cities-memcached:/data
     ports:
       - "11211:11211"
 
 volumes:
-  freewater-memcached:
+  freewater-cities-memcached:
