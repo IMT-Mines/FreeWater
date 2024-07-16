@@ -1,6 +1,6 @@
 import express from 'express';
 import {config} from '../config';
-import {fetchCitiesFromAPI} from "../services/apiCities";
+import {fetchCitiesFromAPI} from "../service/apiCities";
 
 const port = config.PORT;
 const app = express();
