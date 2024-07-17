@@ -11,13 +11,14 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['cityDeleted']);
+
 const faTrashIcon = ref(faTrash);
 
 const deleteCity = async () => {
   try {
-    console.log(`http://localhost:10002/favorite/${props.city.cityCode}`)
-    const response = await axios.delete(`http://localhost:10002/favorite/${props.city.cityCode}`);
-    console.log(response);
+    await axios.delete(`http://localhost:10002/favorite/${props.city.cityCode}`);
+    emit('cityDeleted', props.city.cityCode);
   } catch (error) {
     console.error("Error while deleting : ", error);
   }

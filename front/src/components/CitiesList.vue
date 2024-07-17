@@ -22,7 +22,7 @@ export default {
         const response = await axios.get('http://localhost:10001/cities');
         this.cities = response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
+        console.error('Error while retrieving data:', error);
       }
     },
 
@@ -31,10 +31,12 @@ export default {
         const response = await axios.get('http://localhost:10002/favorite');
         this.favoritesCitiesSamples = response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
+        console.error('Error while retrieving data:', error);
       }
     },
-
+    handleCityDeleted() {
+      this.fetchFavoriteCities();  // Rafraîchir les données des villes favorites
+    },
     async addCity() {
       const cityInput = document.querySelector('input[name="Cities"]');
       const city = this.cities.find((city) => city.name === cityInput.value);
@@ -45,7 +47,7 @@ export default {
           });
           this.fetchFavoriteCities();
         } catch (error) {
-          console.error('Erreur lors de l\'ajout de la ville:', error);
+          console.error('Error adding city:', error);
         }
       }
     },
@@ -58,15 +60,19 @@ export default {
     <div class="add-container">
       <h1>Cities sample</h1>
       <div class="add-city" v-if="cities.length">
-        <input list="cities" name="Cities" />
+        <input list="cities" name="Cities"/>
         <datalist id="cities">
           <option v-for="city in cities" :key="city.code" :value="city.name"></option>
         </datalist>
         <button type="button" @click="addCity">Add</button>
       </div>
+      <div v-else class="fake-loader">
+        <div class="fake-input"></div>
+        <div class="fake-button"></div>
+      </div>
     </div>
     <div v-if="favoritesCitiesSamples.length" class="cities-container">
-      <CityCard v-for="city in favoritesCitiesSamples" :key="city.cityCode" :city="city"/>
+      <CityCard v-for="city in favoritesCitiesSamples" :key="city.cityCode" :city="city" @cityDeleted="handleCityDeleted"/>
     </div>
     <div v-else>
       <p>Loading...</p>
@@ -75,6 +81,40 @@ export default {
 </template>
 
 <style scoped>
+
+.fake-button {
+  width: 43px;
+  height: 35px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-color: #f8f8f8;
+  }
+  50% {
+    background-color: #e0e0e0;
+  }
+  100% {
+    background-color: #f8f8f8;
+  }
+}
+
+.fake-input {
+  width: 186px;
+  height: 36px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  animation: loading 1s infinite;
+}
+
+.fake-loader {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
 .sample-box {
   margin: auto;
