@@ -16,7 +16,7 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173',
     allowedHeaders: ['Authorization', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'DELETE']
 }));
 app.use(cookieParser());
 

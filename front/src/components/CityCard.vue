@@ -1,52 +1,73 @@
-<script>
-export default {
-  props: {
-    city: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+import { ref, computed } from 'vue';
+import Fa from 'vue-fa';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+
+const props = defineProps({
+  city: {
+    type: Object,
+    required: true,
   },
-  computed: {
-    waterQualityClass() {
-      if (this.isDrinkable === 0) return 'not-drinkable';
-      if (this.isDrinkable === 1) return 'partially-drinkable';
-      return 'drinkable';
-    },
-    waterQualityText() {
-      if (this.isDrinkable === 0) return 'Undrinkable';
-      if (this.isDrinkable === 1) return 'Partially drinkable';
-      return 'Drinkable';
-    },
-    waterQualityStyle() {
-      if (this.isDrinkable === 0) return { color: 'red' };
-      if (this.isDrinkable === 1) return { color: 'orange' };
-      return { color: 'green' };
-    },
-    isDrinkable() {
-      const scores = this.city.samples.map(sample => sample.drinkable);
-      if (scores.includes(0)) return 0;
-      if (scores.includes(1)) return 1;
-      return 2;
-    },
-  },
+});
+
+const faTrashIcon = ref(faTrash);
+
+const deleteCity = async () => {
+  try {
+    console.log(`http://localhost:10002/favorite/${props.city.cityCode}`)
+    const response = await axios.delete(`http://localhost:10002/favorite/${props.city.cityCode}`);
+    console.log(response);
+  } catch (error) {
+    console.error("Error while deleting : ", error);
+  }
 };
+
+const isDrinkable = computed(() => {
+  const scores = props.city.samples.map(sample => sample.drinkable);
+  if (scores.includes(0)) return 0;
+  if (scores.includes(1)) return 1;
+  return 2;
+});
+
+const waterQualityClass = computed(() => {
+  if (isDrinkable.value === 0) return 'not-drinkable';
+  if (isDrinkable.value === 1) return 'partially-drinkable';
+  return 'drinkable';
+});
+
+const waterQualityText = computed(() => {
+  if (isDrinkable.value === 0) return 'Undrinkable';
+  if (isDrinkable.value === 1) return 'Partially drinkable';
+  return 'Drinkable';
+});
+
+const waterQualityStyle = computed(() => {
+  if (isDrinkable.value === 0) return { color: 'red' };
+  if (isDrinkable.value === 1) return { color: 'orange' };
+  return { color: 'green' };
+});
 </script>
 
 <template>
   <div :class="waterQualityClass" class="city-card">
-    <h2>{{ city.cityName }} ({{ city.cityCode }})</h2>
+    <div class="card-header">
+      <h2>{{ city.cityName }} ({{ city.cityCode }})</h2>
+      <div class="trash" @click="deleteCity">
+        <Fa :icon="faTrashIcon"/>
+      </div>
+    </div>
     <p>Supplier: {{ city.supplier }}</p>
     <p class="drinkable-indicator" :style="waterQualityStyle">{{ waterQualityText }}</p>
   </div>
 </template>
 
 <style scoped>
-
 .city-card {
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  width: 300px;
+  width: 320px;
   background-color: #f8f8f8;
   justify-content: space-between;
 }
@@ -60,19 +81,26 @@ export default {
   font-weight: 700;
 }
 
+.city-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.city-card .card-header .trash {
+  cursor: pointer;
+  margin-top: 5px;
+}
+
 .not-drinkable {
-  //border: 2px solid red;
-  padding: 1em;
-  margin: 1em 0;
+//border: 2px solid red; padding: 1em; margin: 1em 0;
 }
+
 .partially-drinkable {
-  //border: 2px solid orange;
-  padding: 1em;
-  margin: 1em 0;
+//border: 2px solid orange; padding: 1em; margin: 1em 0;
 }
+
 .drinkable {
-  //border: 2px solid green;
-  padding: 1em;
-  margin: 1em 0;
+//border: 2px solid green; padding: 1em; margin: 1em 0;
 }
 </style>

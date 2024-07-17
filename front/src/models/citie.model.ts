@@ -4,7 +4,7 @@ export interface Sample {
     date: Date;
 }
 
-export interface Citie {
+export interface City {
     cityCode: string;
     cityName: string;
     supplier: string;
