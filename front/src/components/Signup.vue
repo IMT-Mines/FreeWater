@@ -3,11 +3,17 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+const errorMessage = ref('');
 const username = ref('');
 const password = ref('');
+const repeatPassword = ref('');
 const router = useRouter();
 
 const signup = async () => {
+  if (password.value !== repeatPassword.value) {
+    errorMessage.value = 'Passwords do not match';
+    return;
+  }
   try {
     await axios.post('http://localhost:10000/register', {
       username: username.value,
@@ -15,7 +21,7 @@ const signup = async () => {
     });
     router.push('/login');
   } catch (error) {
-    console.error('Signup failed:', error);
+    errorMessage.value = 'Signup failed, please try again';
   }
 };
 </script>
@@ -26,6 +32,8 @@ const signup = async () => {
     <form @submit.prevent="signup" class="signup-form">
       <input type="text" v-model="username" placeholder="Username" required />
       <input type="password" v-model="password" placeholder="Password" required />
+      <input type="password" v-model="repeatPassword" placeholder="Repeat Password" required />
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <button type="submit">Sign Up</button>
     </form>
   </div>
@@ -44,4 +52,9 @@ const signup = async () => {
   gap: 20px;
 }
 
+.error {
+  color: red;
+  font-size: 14px;
+  margin: 0
+}
 </style>

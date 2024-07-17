@@ -52,9 +52,9 @@ onMounted(() => {
 <template>
   <div class="sample-box">
     <div class="add-container">
-      <h1>Cities sample</h1>
+      <h1>City results</h1>
       <div class="add-city" v-if="cities.length">
-        <input list="cities" name="Cities"/>
+        <input list="cities" name="Cities" placeholder="Select a city" />
         <datalist id="cities">
           <option v-for="city in cities" :key="city.code" :value="city.name"></option>
         </datalist>

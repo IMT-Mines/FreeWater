@@ -5,6 +5,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: thisisastrongpassword
+      MONGO_INITDB_DATABASE: freewater
     ports:
       - '27017:27017'
     volumes:
