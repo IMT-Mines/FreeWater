@@ -68,13 +68,14 @@ const waterQualityStyle = computed(() => {
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  width: 320px;
+  width: 300px;
   background-color: #f8f8f8;
   justify-content: space-between;
 }
 
 .city-card h2 {
   margin: 0;
+  font-size: 20px;
 }
 
 .drinkable-indicator {
@@ -94,14 +95,14 @@ const waterQualityStyle = computed(() => {
 }
 
 .not-drinkable {
-//border: 2px solid red; padding: 1em; margin: 1em 0;
+border: 2px solid red; padding: 1em; margin: 1em 0;
 }
 
 .partially-drinkable {
-//border: 2px solid orange; padding: 1em; margin: 1em 0;
+border: 2px solid orange; padding: 1em; margin: 1em 0;
 }
 
 .drinkable {
-//border: 2px solid green; padding: 1em; margin: 1em 0;
+border: 2px solid green; padding: 1em; margin: 1em 0;
 }
 </style>

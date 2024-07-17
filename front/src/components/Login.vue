@@ -1,13 +1,14 @@
 <script setup>
 import axios from 'axios';
-import {ref} from 'vue';
-import {useRouter} from 'vue-router';
-import {useStore} from "vuex";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 const username = ref('');
 const password = ref('');
 const router = useRouter();
 const store = useStore();
+const errorMessage = ref('');
 
 const login = async () => {
   try {
@@ -18,7 +19,7 @@ const login = async () => {
     await store.dispatch('checkAuth');
     router.push('/');
   } catch (error) {
-    console.error('Login failed:', error);
+    errorMessage.value = 'Invalid username or password';
   }
 };
 </script>
@@ -29,13 +30,13 @@ const login = async () => {
     <form @submit.prevent="login" class="signin-form">
       <input type="text" v-model="username" placeholder="Username" required/>
       <input type="password" v-model="password" placeholder="Password" required/>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <button type="submit">Sign In</button>
     </form>
   </div>
 </template>
 
 <style scoped>
-
 .signin-box {
   width: 20%;
   margin: auto;
@@ -47,4 +48,9 @@ const login = async () => {
   gap: 20px;
 }
 
+.error {
+  color: red;
+  font-size: 14px;
+  margin: 0
+}
 </style>

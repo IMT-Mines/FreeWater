@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import {config} from '../config';
-import {signJWT} from "../service/authentication";
+import {findUserByUsername, insertUser, signJWT} from "../service/authentication";
 import cookieParser from "cookie-parser";
 import {isAuthenticated} from "../util/utils";
+import bcrypt from "bcrypt";
+
 
 const port = config.PORT;
 const app = express();
@@ -18,13 +20,44 @@ app.use(cors({
 app.use(cookieParser());
 
 app.post('/login', async (req, res) => {
-    const token = signJWT(req.body.username);
-    res.cookie('jwtToken', token, {httpOnly: true, secure: false, sameSite: 'strict'});
-    res.status(200).send({success: true});
+    const { username, password } = req.body;
+    try {
+        const user = await findUserByUsername(username);
+
+        if (!user) {
+            return res.status(401).send({ success: false, message: 'Invalid username or password' });
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
+            return res.status(401).send({ success: false, message: 'Invalid username or password' });
+        }
+
+        const token = signJWT(username);
+        res.cookie('jwtToken', token, { httpOnly: true, secure: false, sameSite: 'strict' });
+        res.status(200).send({ success: true });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).send({ success: false, message: 'Internal server error' });
+    }
 });
 
 app.post('/register', async (req, res) => {
-    res.status(200).send({registered: true});
+    const { username, password } = req.body;
+    try {
+        const user = await findUserByUsername(username);
+
+        if (user) {
+            return res.status(400).send({ success: false, message: 'Username already exists' });
+        }
+
+        await insertUser(username, password);
+        res.status(201).send({ success: true });
+    } catch (error) {
+        console.error('Register error:', error);
+        res.status(500).send({ success: false, message: 'Internal server error' });
+    }
 });
 
 app.get('/auth', isAuthenticated, async (req, res) => {

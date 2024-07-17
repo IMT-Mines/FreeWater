@@ -40,5 +40,6 @@ button {
   border: none;
   padding: 10px;
   cursor: pointer;
+  font-weight: bold;
 }
 </style>
