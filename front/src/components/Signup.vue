@@ -1,26 +1,22 @@
-<script>
-import axios from "axios";
+<script setup>
+import axios from 'axios';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-    };
-  },
-  methods: {
-    async signup() {
-      try {
-        await axios.post('http://localhost:10000/register', {
-          username: this.username,
-          password: this.password,
-        });
-        this.$router.push('/login');
-      } catch (error) {
-        console.error('Signup failed:', error);
-      }
-    },
-  },
+const username = ref('');
+const password = ref('');
+const router = useRouter();
+
+const signup = async () => {
+  try {
+    await axios.post('http://localhost:10000/register', {
+      username: username.value,
+      password: password.value,
+    });
+    router.push('/login');
+  } catch (error) {
+    console.error('Signup failed:', error);
+  }
 };
 </script>
 
@@ -28,8 +24,8 @@ export default {
   <div class="signup-box">
     <h2>Sign Up</h2>
     <form @submit.prevent="signup" class="signup-form">
-      <input type="text" v-model="username" placeholder="username" required />
-      <input type="password" v-model="password" placeholder="password" required />
+      <input type="text" v-model="username" placeholder="Username" required />
+      <input type="password" v-model="password" placeholder="Password" required />
       <button type="submit">Sign Up</button>
     </form>
   </div>

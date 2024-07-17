@@ -1,58 +1,52 @@
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import CityCard from './CityCard.vue';
 
-export default {
-  components: {
-    CityCard,
-  },
-  data() {
-    return {
-      favoritesCitiesSamples: [],
-      cities: [],
-    };
-  },
-  created() {
-    this.fetchFavoriteCities();
-    this.fetchAllCities();
-  },
-  methods: {
-    async fetchAllCities() {
-      try {
-        const response = await axios.get('http://localhost:10001/cities');
-        this.cities = response.data;
-      } catch (error) {
-        console.error('Error while retrieving data:', error);
-      }
-    },
+const favoritesCitiesSamples = ref([]);
+const cities = ref([]);
 
-    async fetchFavoriteCities() {
-      try {
-        const response = await axios.get('http://localhost:10002/favorite');
-        this.favoritesCitiesSamples = response.data;
-      } catch (error) {
-        console.error('Error while retrieving data:', error);
-      }
-    },
-    handleCityDeleted() {
-      this.fetchFavoriteCities();  // Rafraîchir les données des villes favorites
-    },
-    async addCity() {
-      const cityInput = document.querySelector('input[name="Cities"]');
-      const city = this.cities.find((city) => city.name === cityInput.value);
-      if (city) {
-        try {
-          await axios.post('http://localhost:10002/favorite', {
-            cityCode: city.code,
-          });
-          this.fetchFavoriteCities();
-        } catch (error) {
-          console.error('Error adding city:', error);
-        }
-      }
-    },
-  },
+const fetchAllCities = async () => {
+  try {
+    const response = await axios.get('http://localhost:10001/cities');
+    cities.value = response.data;
+  } catch (error) {
+    console.error('Error while retrieving data:', error);
+  }
 };
+
+const fetchFavoriteCities = async () => {
+  try {
+    const response = await axios.get('http://localhost:10002/favorite');
+    favoritesCitiesSamples.value = response.data;
+  } catch (error) {
+    console.error('Error while retrieving data:', error);
+  }
+};
+
+const handleCityDeleted = () => {
+  fetchFavoriteCities();
+};
+
+const addCity = async () => {
+  const cityInput = document.querySelector('input[name="Cities"]');
+  const city = cities.value.find((city) => city.name === cityInput.value);
+  if (city) {
+    try {
+      await axios.post('http://localhost:10002/favorite', {
+        cityCode: city.code,
+      });
+      fetchFavoriteCities();
+    } catch (error) {
+      console.error('Error adding city:', error);
+    }
+  }
+};
+
+onMounted(() => {
+  fetchFavoriteCities();
+  fetchAllCities();
+});
 </script>
 
 <template>
@@ -81,7 +75,6 @@ export default {
 </template>
 
 <style scoped>
-
 .fake-button {
   width: 43px;
   height: 35px;

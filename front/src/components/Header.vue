@@ -1,37 +1,24 @@
-<script>
-import axios from "axios";
+<script setup>
+import { computed, watch } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
-export default {
-  data() {
-    return {
-      isAuthenticated: false,
-    };
-  },
-  methods: {
-    async checkAuth() {
-      try {
-        const response = await axios.get('http://localhost:10000/auth');
-        this.isAuthenticated = response.data.authenticated;
-        this.user = response.data.user;
-      } catch (error) {
-        this.isAuthenticated = false;
-      }
-    },
-    async logout() {
-      try {
-        await axios.post('http://localhost:10000/logout');
-        document.cookie = 'jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        this.isAuthenticated = false;
-        this.$router.push('/login');
-      } catch (error) {
-        console.error('Logout failed:', error);
-      }
-    },
-  },
-  created() {
-    this.checkAuth();
-  },
+const router = useRouter();
+const store = useStore();
+let isAuthenticated = computed(() => store.state.isAuthenticated);
+
+const logout = async () => {
+  try {
+    await axios.post('http://localhost:10000/logout');
+    document.cookie = 'jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    await store.dispatch('checkAuth');
+    router.push('/login');
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
 };
+
 </script>
 
 <template>
