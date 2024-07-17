@@ -34,6 +34,21 @@ export default {
         console.error('Erreur lors de la récupération des données:', error);
       }
     },
+
+    async addCity() {
+      const cityInput = document.querySelector('input[name="Cities"]');
+      const city = this.cities.find((city) => city.name === cityInput.value);
+      if (city) {
+        try {
+          await axios.post('http://localhost:10002/favorite', {
+            cityCode: city.code,
+          });
+          this.fetchFavoriteCities();
+        } catch (error) {
+          console.error('Erreur lors de l\'ajout de la ville:', error);
+        }
+      }
+    },
   },
 };
 </script>
@@ -42,11 +57,12 @@ export default {
   <div class="sample-box">
     <div class="add-container">
       <h1>Cities sample</h1>
-      <div v-if="cities.length">
+      <div class="add-city" v-if="cities.length">
         <input list="cities" name="Cities" />
         <datalist id="cities">
           <option v-for="city in cities" :key="city.code" :value="city.name"></option>
         </datalist>
+        <button type="button" @click="addCity">Add</button>
       </div>
     </div>
     <div v-if="favoritesCitiesSamples.length" class="cities-container">
@@ -71,6 +87,11 @@ export default {
   margin-bottom: 20px;
 }
 
+.add-city {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
 .cities-container {
   display: flex;

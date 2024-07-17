@@ -27,6 +27,12 @@ input[type=password] {
   border: 1px solid gray
 }
 
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid gray
+}
+
 button {
   background-color: #2c188d;
   color: white;
