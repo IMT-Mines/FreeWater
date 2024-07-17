@@ -1,8 +1,6 @@
-version: '3.9'
-
 services:
   mongo:
-    image: redis:7.2.5-alpine
+    image: mongo:7.0.12-jammy
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
