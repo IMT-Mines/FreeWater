@@ -1,66 +1,125 @@
-import {beforeAll, afterAll, describe, test, expect} from 'vitest'
-import {startServer} from '../src/express/server'
-import {fetchSampleFromCity, getAllSamples, getDrinkableScore} from '../src/service/apiSamples'
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { SampleData } from '../src/model/sample.model';
+import { ApiSamples } from '../src/service/apiSamples';
+import axios from 'axios';
 
-let app;
-let server;
+describe('ApiSamples', () => {
+  let sut: ApiSamples;
 
-beforeAll(async () => {
-    let start = startServer();
-    await start.server;
+  const mockSampleData: SampleData = {
+    cityCode: '84076',
+    cityName: 'AVIGNON',
+    supplier: 'SDEI',
+    date: new Date('2021-09-01T00:00:00.000Z'),
+    samples: [
+      {
+        name: 'Aluminium',
+        value: 0.01,
+        unit: 'mg/l'
+      }
+    ],
+    conclusion: 'conclusion',
+    drinkableScore: 0
+  };
 
-    app = start.app;
-    server = start.server;
-});
+  beforeAll(() => {
+    sut = new ApiSamples();
+  });
 
-afterAll(() => {
-    server.close();
-});
-
-describe('fetchSampleFromCity', () => {
-    test('Successful', async () => {
-        fetchSampleFromCity('84076').then((response) => {
-            expect(response).to.be.an('object');
-            expect(response).to.have.keys('cityCode', 'cityName', 'supplier', 'samples');
-            expect(response.cityCode).to.be.a('string');
-            expect(response.cityName).to.be.a('string');
-            expect(response.supplier).to.be.a('string');
-            expect(response.samples).to.be.an('array');
-
-            for (const sample of response.samples) {
-                expect(sample).to.be.an('object');
-                expect(sample).to.have.keys('drinkable', 'name', 'date');
-                expect(sample.drinkable).to.be.a('number');
-                expect(sample.name).to.be.a('string');
-                expect(sample.date).to.be.an.instanceof(Date);
+  describe('fetchSampleFromCity', () => {
+    it('should fetch sample data from city', async () => {
+      // Arrange
+      const code = '84076';
+      const axiosSpy = vi.spyOn(axios, 'get').mockResolvedValue({
+        data: {
+          data: [
+            {
+              code_commune: '84076',
+              nom_commune: 'AVIGNON',
+              nom_distributeur: 'SDEI',
+              date_prelevement: '2021-09-01T00:00:00.000Z',
+              conclusion_conformite_prelevement: 'conclusion',
+              resultat_numerique: 0.01,
+              libelle_parametre: 'Aluminium',
+              libelle_unite: 'mg/l'
             }
-        });
+          ]
+        }
+      });
+
+      // Act
+      const result = await sut.fetchSampleFromCity(code);
+
+      // Assert
+      expect(result).toEqual(mockSampleData);
+      expect(axiosSpy).toHaveBeenCalledWith(
+        `https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?fields=resultat_numerique%2Clibelle_unite%2Clibelle_parametre%2Cdate_prelevement%2Cconclusion_conformite_prelevement%2Cnom_distributeur%2Cnom_commune%2Ccode_commune&size=40&code_commune=${code}`
+      );
+      axiosSpy.mockRestore();
+    });
+  });
+
+  describe('getAllSamples', () => {
+    it('should fetch samples for all given cities', async () => {
+      // Arrange
+      const codesCities = ['84076'];
+      const fetchSpy = vi.spyOn(sut, 'fetchSampleFromCity').mockResolvedValue(mockSampleData);
+
+      // Act
+      const result = await sut.getAllSamples(codesCities);
+
+      // Assert
+      expect(fetchSpy).toHaveBeenCalledWith('84076');
+      expect(result).toEqual([mockSampleData]);
+      fetchSpy.mockRestore();
+    });
+  });
+
+  describe('getDrinkableScore', () => {
+    it("should return 2 when conformity is 'Eau d'alimentation conforme aux exigences de qualité en vigueur pour l'ensemble des paramètres mesurés.'", () => {
+      // Arrange
+      const conformity =
+        "Eau d'alimentation conforme aux exigences de qualité en vigueur pour l'ensemble des paramètres mesurés.";
+
+      // Act
+      const result = sut.getDrinkableScore(conformity);
+
+      // Assert
+      expect(result).toBe(2);
     });
 
-    test('Error', async () => {
-        fetchSampleFromCity('-1').then((response) => {
-            console.log(response);
-            expect(response).to.be.an('object');
-        });
-    });
-});
+    it('should return 1 when conformity is "Eau d\'alimentation conforme aux limites de qualité et non conforme aux références de qualité."', () => {
+      // Arrange
+      const conformity =
+        "Eau d'alimentation conforme aux limites de qualité et non conforme aux références de qualité.";
 
-describe("getAllSamples", () => {
-    test('Successful', async () => {
-        getAllSamples(['84076']).then((response) => {
-            expect(response).to.be.an('array');
-        });
-    });
-});
+      // Act
+      const result = sut.getDrinkableScore(conformity);
 
-describe('getDrinkableScore', () => {
-    test('Drinkable', async () => {
-        let score: number = getDrinkableScore("Eau d'alimentation conforme aux exigences de qualité en vigueur pour l'ensemble des paramètres mesurés.");
-        expect(score).to.be.equal(2);
+      // Assert
+      expect(result).toBe(1);
     });
 
-    test('Not drinkable', async () => {
-        let score: number = getDrinkableScore("Eau d'alimentation conforme aux limites de qualité et non conforme aux références de qualité.");
-        expect(score).to.be.equal(1);
+    it('should return 1 when conformity is "Eau potable au vu des paramètres recherchés, naturellement faiblement minéralisée."', () => {
+      // Arrange
+      const conformity = 'Eau potable au vu des paramètres recherchés, naturellement faiblement minéralisée.';
+
+      // Act
+      const result = sut.getDrinkableScore(conformity);
+
+      // Assert
+      expect(result).toBe(1);
     });
+
+    it('should return 0 when conformity is "Eau non conforme."', () => {
+      // Arrange
+      const conformity = 'Eau non conforme.';
+
+      // Act
+      const result = sut.getDrinkableScore(conformity);
+
+      // Assert
+      expect(result).toBe(0);
+    });
+  });
 });
