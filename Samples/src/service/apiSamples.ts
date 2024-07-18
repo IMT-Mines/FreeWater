@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SampleData } from '../model/sample.model';
 
-async function fetchSampleFromCity(code: string): Promise<SampleData> {
+export async function fetchSampleFromCity(code: string): Promise<SampleData> {
   try {
     const response = await axios.get(`https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?fields=resultat_numerique%2Clibelle_unite%2Clibelle_parametre%2Cdate_prelevement%2Cconclusion_conformite_prelevement%2Cnom_distributeur%2Cnom_commune%2Ccode_commune&size=40&code_commune=${code}`);
     const sampleData: SampleData = {
@@ -42,7 +42,7 @@ export async function getAllSamples(codesCities: string[]) {
   return sampleData;
 }
 
-function getDrinkableScore(conformity: string) {
+export function getDrinkableScore(conformity: string) {
   if (conformity === 'Eau d\'alimentation conforme aux exigences de qualité en vigueur pour l\'ensemble des paramètres mesurés.') {
     return 2;
   } else if (conformity === 'Eau d\'alimentation conforme aux limites de qualité et non conforme aux références de qualité.' ||

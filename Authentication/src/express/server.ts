@@ -70,8 +70,9 @@ app.post('/logout', isAuthenticated, async (req, res) => {
 });
 
 export function startServer() {
-  app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
-}
+    let server = app.listen(port, () => {
+        console.log(`Server started on port ${port}`);
+    });
 
+    return { app: app, server: server};
+}

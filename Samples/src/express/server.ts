@@ -14,7 +14,9 @@ app.post('/samples', async (req, res) => {
 });
 
 export function startServer() {
-  app.listen(port, () => {
+  let server = app.listen(port, () => {
     console.log(`Server started on port ${port}`);
   });
+
+  return { app: app, server: server};
 }
