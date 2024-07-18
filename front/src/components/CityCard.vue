@@ -11,7 +11,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['cityDeleted']);
+const emit = defineEmits(['cityDeleted', 'showDetails']);
 
 const faTrashIcon = ref(faTrash);
 
@@ -24,10 +24,14 @@ const deleteCity = async () => {
   }
 };
 
+const showDetails = () => {
+  emit('showDetails', props.city);
+};
+
 const isDrinkable = computed(() => {
-  const scores = props.city.samples.map(sample => sample.drinkable);
-  if (scores.includes(0)) return 0;
-  if (scores.includes(1)) return 1;
+  const score = props.city.drinkableScore;
+  if (score === 0) return 0;
+  if (score === 1) return 1;
   return 2;
 });
 
@@ -44,20 +48,21 @@ const waterQualityText = computed(() => {
 });
 
 const waterQualityStyle = computed(() => {
-  if (isDrinkable.value === 0) return { color: 'red' };
-  if (isDrinkable.value === 1) return { color: 'orange' };
-  return { color: 'green' };
+  if (isDrinkable.value === 0) return {color: 'red'};
+  if (isDrinkable.value === 1) return {color: 'orange'};
+  return {color: 'green'};
 });
 </script>
 
 <template>
-  <div :class="waterQualityClass" class="city-card">
+  <div :class="waterQualityClass" class="city-card" @click="showDetails">
     <div class="card-header">
       <h2>{{ city.cityName }} ({{ city.cityCode }})</h2>
-      <div class="trash" @click="deleteCity">
-        <Fa :icon="faTrashIcon"/>
+      <div class="trash" @click.stop="deleteCity">
+        <Fa :icon="faTrashIcon" />
       </div>
     </div>
+    <p class="date">Date: {{ new Date(city.date).toLocaleDateString() }}</p>
     <p>Supplier: {{ city.supplier }}</p>
     <p class="drinkable-indicator" :style="waterQualityStyle">{{ waterQualityText }}</p>
   </div>
@@ -71,6 +76,12 @@ const waterQualityStyle = computed(() => {
   width: 300px;
   background-color: #f8f8f8;
   justify-content: space-between;
+  cursor: pointer;
+  gap: 10px;
+}
+
+p {
+  margin: 0;
 }
 
 .city-card h2 {
@@ -95,14 +106,20 @@ const waterQualityStyle = computed(() => {
 }
 
 .not-drinkable {
-border: 2px solid red; padding: 1em; margin: 1em 0;
+  border: 2px solid red;
+  padding: 1em;
+  margin: 1em 0;
 }
 
 .partially-drinkable {
-border: 2px solid orange; padding: 1em; margin: 1em 0;
+  border: 2px solid orange;
+  padding: 1em;
+  margin: 1em 0;
 }
 
 .drinkable {
-border: 2px solid green; padding: 1em; margin: 1em 0;
+  border: 2px solid green;
+  padding: 1em;
+  margin: 1em 0;
 }
 </style>

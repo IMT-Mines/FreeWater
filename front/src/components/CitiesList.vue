@@ -2,9 +2,11 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import CityCard from './CityCard.vue';
+import CityDetailModal from './CityDetailModal.vue';
 
 const favoritesCitiesSamples = ref([]);
 const cities = ref([]);
+const selectedCity = ref(null);
 
 const fetchAllCities = async () => {
   try {
@@ -26,6 +28,14 @@ const fetchFavoriteCities = async () => {
 
 const handleCityDeleted = () => {
   fetchFavoriteCities();
+};
+
+const handleShowDetails = (city) => {
+  selectedCity.value = city;
+};
+
+const handleCloseModal = () => {
+  selectedCity.value = null;
 };
 
 const addCity = async () => {
@@ -66,11 +76,12 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="favoritesCitiesSamples.length" class="cities-container">
-      <CityCard v-for="city in favoritesCitiesSamples" :key="city.cityCode" :city="city" @cityDeleted="handleCityDeleted"/>
+      <CityCard v-for="city in favoritesCitiesSamples" :key="city.cityCode" :city="city" @cityDeleted="handleCityDeleted" @showDetails="handleShowDetails" />
     </div>
     <div v-else>
       <p>Loading...</p>
     </div>
+    <CityDetailModal v-if="selectedCity" :city="selectedCity" @close="handleCloseModal" />
   </div>
 </template>
 

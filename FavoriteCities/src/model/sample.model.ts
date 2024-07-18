@@ -1,12 +1,15 @@
 export interface Sample {
-    drinkable: number;
     name: string;
-    date: Date;
+    unit: string;
+    value: number;
 }
 
 export interface SampleData {
     cityCode: string;
     cityName: string;
     supplier: string;
+    date: Date;
     samples: Sample[];
+    conclusion: string;
+    drinkableScore: number;
 }
