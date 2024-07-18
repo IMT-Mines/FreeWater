@@ -1,10 +1,11 @@
 services:
   memcached:
     image: memcached:1.6-alpine3.20
+    command: memcached -m 3
     volumes:
       - freewater-samples-memcached:/data
     ports:
-      - "11211:11211"
+      - "11212:11211"
 
 volumes:
   freewater-samples-memcached:

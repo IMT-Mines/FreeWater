@@ -1,6 +1,6 @@
 import express from 'express';
 import { config } from '../config';
-import {getAllSamples} from "../service/apiSamples";
+import { getAllSamples } from '../service/apiSamples';
 
 const port = config.PORT;
 const app = express();

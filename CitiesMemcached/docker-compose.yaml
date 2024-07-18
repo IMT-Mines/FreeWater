@@ -1,6 +1,7 @@
 services:
   memcached:
     image: memcached:1.6-alpine3.20
+    command: memcached -m 4 -I 2m
     volumes:
       - freewater-cities-memcached:/data
     ports:

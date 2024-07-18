@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';

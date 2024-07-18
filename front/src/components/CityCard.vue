@@ -42,7 +42,7 @@ const waterQualityClass = computed(() => {
 });
 
 const waterQualityText = computed(() => {
-  if (isDrinkable.value === 0) return 'Undrinkable';
+  if (isDrinkable.value === 0) return 'Potentially undrinkable';
   if (isDrinkable.value === 1) return 'Partially drinkable';
   return 'Drinkable';
 });

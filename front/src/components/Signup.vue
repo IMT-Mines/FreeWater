@@ -17,7 +17,7 @@ const signup = async () => {
   try {
     await axios.post('http://localhost:10000/register', {
       username: username.value,
-      password: password.value,
+      password: password.value
     });
     router.push('/login');
   } catch (error) {

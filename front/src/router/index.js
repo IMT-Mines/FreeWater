@@ -5,28 +5,28 @@ import Login from '@/components/Login.vue';
 import store from '@/store/index';
 
 const routes = [
-    { path: '/', component: CitiesList, meta: { requiresAuth: true } },
-    { path: '/signup', component: Signup },
-    { path: '/login', component: Login },
+  { path: '/', component: CitiesList, meta: { requiresAuth: true } },
+  { path: '/signup', component: Signup },
+  { path: '/login', component: Login }
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes
 });
 
 router.beforeEach(async (to, from, next) => {
-    await store.dispatch('checkAuth');
+  await store.dispatch('checkAuth');
 
-    if (to.meta.requiresAuth) {
-        if (!store.state.isAuthenticated) {
-            next('/login');
-        } else {
-            next();
-        }
+  if (to.meta.requiresAuth) {
+    if (!store.state.isAuthenticated) {
+      next('/login');
     } else {
-        next();
+      next();
     }
+  } else {
+    next();
+  }
 });
 
 export default router;

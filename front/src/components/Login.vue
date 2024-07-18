@@ -14,7 +14,7 @@ const login = async () => {
   try {
     await axios.post('http://localhost:10000/login', {
       username: username.value,
-      password: password.value,
+      password: password.value
     });
     await store.dispatch('checkAuth');
     router.push('/');
@@ -28,8 +28,8 @@ const login = async () => {
   <div class="signin-box">
     <h2 class="title">Sign In</h2>
     <form @submit.prevent="login" class="signin-form">
-      <input type="text" v-model="username" placeholder="Username" required/>
-      <input type="password" v-model="password" placeholder="Password" required/>
+      <input type="text" v-model="username" placeholder="Username" required />
+      <input type="password" v-model="password" placeholder="Password" required />
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <button type="submit">Sign In</button>
     </form>
