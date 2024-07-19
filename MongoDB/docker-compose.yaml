@@ -1,15 +1,16 @@
 services:
-  mongo:
-    image: mongo:7.0.12-jammy
+  mysql:
+    image: mysql:9.0.0
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: thisisastrongpassword
-      MONGO_INITDB_DATABASE: freewater
+      MYSQL_DATABASE: 'freewater_favorite'
+      MYSQL_USER: 'freewater'
+      MYSQL_PASSWORD: 'thisisastrongpassword'
+      MYSQL_ROOT_PASSWORD: 'thisisastrongpassword'
     ports:
-      - '27017:27017'
+      - '3307:3306'
     volumes:
-      - freewater-mongodb:/data/db
+      - freewater-favorites-mysql:/var/lib/mysql
 
 volumes:
-  freewater-mongodb:
+  freewater-favorites-mysql:

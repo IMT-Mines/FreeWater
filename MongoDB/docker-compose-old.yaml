@@ -1,0 +1,15 @@
+services:
+  mongo:
+    image: mongo:7.0.12-jammy
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: thisisastrongpassword
+      MONGO_INITDB_DATABASE: freewater
+    ports:
+      - '27017:27017'
+    volumes:
+      - freewater-mongodb:/data/db
+
+volumes:
+  freewater-mongodb:

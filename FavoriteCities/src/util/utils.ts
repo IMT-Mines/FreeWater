@@ -19,3 +19,7 @@ function verifyJWT(token: string) {
     process.env.JWT_SECRET!
   );
 }
+
+export function getJWTPayload(token: string) {
+  return jwt.decode(token);
+}

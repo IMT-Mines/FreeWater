@@ -3,15 +3,14 @@ services:
     image: mysql:9.0.0
     restart: always
     environment:
+      MYSQL_DATABASE: 'freewater_users'
       MYSQL_USER: 'freewater'
-      MYSQL_DATABASE: 'freewater'
       MYSQL_PASSWORD: 'thisisastrongpassword'
       MYSQL_ROOT_PASSWORD: 'thisisastrongpassword'
-
     ports:
       - '3306:3306'
     volumes:
-      - freewater-mysql:/var/lib/mysql
+      - freewater-users-mysql:/var/lib/mysql
 
 volumes:
-  freewater-mysql:
+  freewater-users-mysql:
