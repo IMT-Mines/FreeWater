@@ -1,14 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from '../config';
-import { findUserByUsername, insertUser, signJWT } from '../service/authentication';
+import { AuthenticationService } from '../service/authentication.service';
 import cookieParser from 'cookie-parser';
-import { isAuthenticated } from '../util/utils';
+import { isAuthenticated, signJWT } from '../util/utils';
 import bcrypt from 'bcrypt';
 
 
 const port = config.PORT;
 const app = express();
+const authenticationService = new AuthenticationService();
 
 app.use(express.json());
 app.use(cors({
@@ -22,7 +23,7 @@ app.use(cookieParser());
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await findUserByUsername(username);
+    const user = await authenticationService.findUserByUsername(username);
 
     if (!user) {
       return res.status(401).send({ success: false, message: 'Invalid username or password' });
@@ -46,13 +47,13 @@ app.post('/login', async (req, res) => {
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await findUserByUsername(username);
+    const user = await authenticationService.findUserByUsername(username);
 
     if (user) {
       return res.status(400).send({ success: false, message: 'Username already exists' });
     }
 
-    await insertUser(username, password);
+    await authenticationService.insertUser(username, password);
     res.status(201).send({ success: true });
   } catch (error) {
     console.error('Register error:', error);

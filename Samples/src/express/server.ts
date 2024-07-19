@@ -1,17 +1,22 @@
 import express from 'express';
 import { config } from '../config';
-import {ApiSamples} from "../service/apiSamples";
+import { ApiSamplesService } from '../service/apiSamples.service';
 
 const port = config.PORT;
 const app = express();
-const apiSamples = new ApiSamples();
+const apiSamplesService = new ApiSamplesService();
 
 app.use(express.json());
 
 app.post('/samples', async (req, res) => {
   const codes = req.body;
-  const sampleData = await apiSamples.getAllSamples(codes);
-  res.status(200).send(sampleData);
+  try {
+    const sampleData = await apiSamplesService.getAllSamples(codes);
+    res.status(200).send(sampleData);
+  } catch (error) {
+    console.error('Error fetching samples:', error);
+    res.status(500).send({ success: false, message: 'Internal server error' });
+  }
 });
 
 export function startServer() {

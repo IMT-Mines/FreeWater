@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { SampleData } from '../src/model/sample.model';
-import { ApiSamples } from '../src/service/apiSamples';
+import { ApiSamplesService } from '../src/service/apiSamples.service';
 import axios from 'axios';
 
-describe('ApiSamples', () => {
-  let sut: ApiSamples;
+describe('ApiSamplesService', () => {
+  let sut: ApiSamplesService;
 
   const mockSampleData: SampleData = {
     cityCode: '84076',
@@ -23,7 +23,7 @@ describe('ApiSamples', () => {
   };
 
   beforeAll(() => {
-    sut = new ApiSamples();
+    sut = new ApiSamplesService();
   });
 
   describe('fetchSampleFromCity', () => {

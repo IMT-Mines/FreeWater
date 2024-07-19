@@ -3,10 +3,12 @@ import cors from 'cors';
 import { config } from '../config';
 import { isAuthenticated } from '../util/utils';
 import cookieParser from 'cookie-parser';
-import { fetchCities } from '../service/cities.service';
+import { CitiesService } from '../service/cities.service';
 
 const port = config.PORT;
 const app = express();
+const citiesService = new CitiesService();
+
 
 app.use(express.json());
 app.use(cors({
@@ -19,7 +21,7 @@ app.use(cookieParser());
 
 app.get('/cities', isAuthenticated, async (req, res) => {
   try {
-    const externalData = await fetchCities();
+    const externalData = await citiesService.fetchCities();
     res.status(200).send(externalData);
   } catch (error) {
     console.log('Error fetching external data:', error);

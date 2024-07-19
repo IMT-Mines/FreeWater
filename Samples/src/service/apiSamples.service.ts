@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SampleData } from '../model/sample.model';
 
-export class ApiSamples {
+export class ApiSamplesService {
   async fetchSampleFromCity(code: string): Promise<SampleData> {
     try {
       const response = await axios.get(
